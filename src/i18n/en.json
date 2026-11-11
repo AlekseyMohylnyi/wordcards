@@ -1,0 +1,69 @@
+{
+  "tabs": {
+    "learn": "Learn",
+    "stats": "Stats",
+    "words": "Words",
+    "settings": "Settings"
+  },
+  "home": {
+    "title": "Learn",
+    "level": "Level",
+    "category": "Category",
+    "start": "Start",
+    "comingSoon": "Word selection is coming in the next stage."
+  },
+  "categories": {
+    "mix": "Mix",
+    "home": "Home",
+    "nature": "Nature",
+    "travel": "Travel",
+    "food": "Food",
+    "work": "Work",
+    "health": "Health",
+    "city": "City",
+    "feelings": "Feelings",
+    "tech": "Tech",
+    "shopping": "Shopping",
+    "sport": "Sport",
+    "family": "Family",
+    "clothes": "Clothes",
+    "communication": "Communication"
+  },
+  "session": {
+    "finish": "Finish"
+  },
+  "summary": {
+    "title": "Summary",
+    "toHome": "Home"
+  },
+  "stats": {
+    "title": "Stats",
+    "comingSoon": "Stats are coming soon."
+  },
+  "words": {
+    "title": "My words",
+    "learned": "Learned",
+    "review": "To review",
+    "empty": "Nothing here yet."
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Interface language",
+    "sessionSize": "Session size",
+    "dailyGoal": "Daily goal",
+    "voice": "Pronunciation",
+    "voiceUS": "American (US)",
+    "voiceUK": "British (UK)",
+    "rate": "Speech rate",
+    "rateNormal": "Normal",
+    "rateSlow": "Slow",
+    "about": "About",
+    "version": "Version",
+    "wordsInBase": "Words in database"
+  },
+  "update": {
+    "available": "A new version is available",
+    "reload": "Update",
+    "dismiss": "Close"
+  }
+}

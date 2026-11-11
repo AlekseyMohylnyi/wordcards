@@ -1,0 +1,80 @@
+[
+  {
+    "id": "go-verb",
+    "word": "go",
+    "forms": ["go", "went", "gone"],
+    "ipa": "/ɡəʊ/",
+    "pos": "verb",
+    "level": "A1",
+    "category": "travel",
+    "translation": ["йти", "їхати"],
+    "synonyms": ["leave", "travel"],
+    "example": "We go to the sea every summer.",
+    "exampleUk": "Ми їздимо на море щоліта."
+  },
+  {
+    "id": "house-noun",
+    "word": "house",
+    "forms": null,
+    "ipa": "/haʊs/",
+    "pos": "noun",
+    "level": "A1",
+    "category": "home",
+    "translation": ["будинок", "дім"],
+    "synonyms": ["home"],
+    "example": "Their house has a big garden.",
+    "exampleUk": "Їхній будинок має великий сад."
+  },
+  {
+    "id": "apple-noun",
+    "word": "apple",
+    "forms": null,
+    "ipa": "/ˈæp.əl/",
+    "pos": "noun",
+    "level": "A1",
+    "category": "food",
+    "translation": ["яблуко"],
+    "synonyms": [],
+    "example": "I eat an apple every morning.",
+    "exampleUk": "Я їм яблуко щоранку."
+  },
+  {
+    "id": "happy-adjective",
+    "word": "happy",
+    "forms": null,
+    "ipa": "/ˈhæp.i/",
+    "pos": "adjective",
+    "level": "A1",
+    "category": "feelings",
+    "translation": ["щасливий", "радий"],
+    "synonyms": ["glad", "cheerful"],
+    "example": "She is happy to see her friends.",
+    "exampleUk": "Вона рада бачити своїх друзів."
+  },
+  {
+    "id": "mother-noun",
+    "word": "mother",
+    "forms": null,
+    "ipa": "/ˈmʌð.ə/",
+    "pos": "noun",
+    "level": "A1",
+    "category": "family",
+    "translation": ["мама", "мати"],
+    "synonyms": ["mum"],
+    "example": "My mother works in a hospital.",
+    "exampleUk": "Моя мама працює в лікарні."
+  },
+  {
+    "id": "buy-verb",
+    "word": "buy",
+    "forms": ["buy", "bought", "bought"],
+    "ipa": "/baɪ/",
+    "pos": "verb",
+    "level": "A1",
+    "category": "shopping",
+    "translation": ["купувати"],
+    "synonyms": ["purchase"],
+    "example": "I want to buy a new phone.",
+    "exampleUk": "Я хочу купити новий телефон."
+  }
+]
