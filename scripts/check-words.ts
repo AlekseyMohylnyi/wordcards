@@ -219,13 +219,22 @@ function inflect(w: string): string[] {
   return [...out]
 }
 
-/** All surface forms of a (possibly multi-word) entry; the first token is inflected. */
+/**
+ * All surface forms of a (possibly multi-word) entry.
+ * The first token is inflected for verbs and phrases ("checks in"), the last one for
+ * compound nouns ("cycle lanes", "fitting rooms").
+ */
 function surfaceForms(word: string, forms: string[] | null): string[] {
   const bases = [word, ...(forms ?? []).flatMap((f) => f.split(/[|/]/))]
   const result = new Set<string>()
   for (const base of bases) {
-    const [head, ...rest] = normalize(base).trim().split(' ')
+    const tokens = normalize(base).trim().split(' ')
+    const [head, ...rest] = tokens
     for (const h of inflect(head)) result.add([h, ...rest].join(' '))
+    if (tokens.length > 1) {
+      const last = tokens[tokens.length - 1]
+      for (const l of inflect(last)) result.add([...tokens.slice(0, -1), l].join(' '))
+    }
   }
   return [...result]
 }
