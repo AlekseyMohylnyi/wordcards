@@ -8,7 +8,7 @@ import { DEV_FORCE_CHECK_KEY } from '@/services/review'
 
 const { t } = useI18n()
 const { settings } = useSettingsStore()
-const version = __APP_VERSION__
+const version = `${__APP_VERSION__} · ${__BUILD_ID__}`
 const wordCount = ref<number | null>(null)
 
 // Developer options: only in `npm run dev`, stripped from the production build

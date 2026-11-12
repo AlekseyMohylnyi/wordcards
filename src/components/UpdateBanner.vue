@@ -3,7 +3,36 @@ import { useRegisterSW } from 'virtual:pwa-register/vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
-const { needRefresh, updateServiceWorker } = useRegisterSW()
+
+const CHECK_EVERY_MS = 60 * 60 * 1000
+
+// The browser looks for a new service worker only when the app is (re)loaded.
+// An installed iPhone app is usually resumed from the background instead, so we also check
+// when it becomes visible again and once an hour while it stays open.
+const { needRefresh, updateServiceWorker } = useRegisterSW({
+  onRegisteredSW(swUrl, registration) {
+    if (!registration) return
+    let lastCheck = Date.now()
+
+    const check = async () => {
+      if (registration.installing || !navigator.onLine) return
+      lastCheck = Date.now()
+      try {
+        // Skip if the server is unreachable (offline, captive portal)
+        const res = await fetch(swUrl, { cache: 'no-store', headers: { 'cache-control': 'no-cache' } })
+        if (res.ok) await registration.update()
+      } catch {
+        // offline: try again next time
+      }
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      // at most once a minute, so quick app switching does not spam the server
+      if (document.visibilityState === 'visible' && Date.now() - lastCheck > 60_000) void check()
+    })
+    setInterval(() => void check(), CHECK_EVERY_MS)
+  },
+})
 
 function dismiss() {
   needRefresh.value = false
