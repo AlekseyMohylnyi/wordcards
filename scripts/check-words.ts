@@ -352,8 +352,17 @@ for (const level of LEVELS) {
         if (!exampleContains(w.example, w.word, forms)) err(`"example" does not contain "${w.word}" or its forms: "${w.example}"`)
       }
     }
-    if (isStr(w.exampleUk) && /[a-zA-Z]{2,}/.test(w.exampleUk)) warn('"exampleUk" contains Latin letters')
-    if (isStrArray(w.translation) && w.translation.some((t) => /[a-zA-Z]/.test(t))) warn('"translation" contains Latin letters')
+    // Translations on cards are always Ukrainian, whatever the interface language
+    const isUkrainian = (s: string) => /[а-яґєіїʼ']/i.test(s) && /[а-яґєії]/i.test(s)
+    if (isStrArray(w.translation)) {
+      const notUk = w.translation.filter((t) => !isUkrainian(t))
+      if (notUk.length) err(`"translation" must be Ukrainian: ${notUk.map((t) => `"${t}"`).join(', ')}`)
+      if (w.translation.some((t) => /[a-zA-Z]/.test(t))) warn('"translation" contains Latin letters')
+    }
+    if (isStr(w.exampleUk)) {
+      if (!isUkrainian(w.exampleUk)) err('"exampleUk" must be Ukrainian')
+      else if (/[a-zA-Z]{2,}/.test(w.exampleUk)) warn('"exampleUk" contains Latin letters')
+    }
 
     if (isStr(w.category) && isStr(w.level)) {
       table[w.category] ??= {}

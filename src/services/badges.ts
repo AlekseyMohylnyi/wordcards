@@ -1,4 +1,4 @@
-// Achievement badges (CLAUDE.md, "Статистика").
+// Achievement badges (CLAUDE.md, Statistics section).
 
 export type BadgeKind = 'session' | 'learned' | 'streak' | 'check'
 

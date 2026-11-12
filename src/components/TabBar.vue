@@ -17,7 +17,7 @@ const tabs = [
 </script>
 
 <template>
-  <nav class="tabbar" aria-label="Main">
+  <nav class="tabbar" :aria-label="t('tabs.label')">
     <RouterLink v-for="tab in tabs" :key="tab.to" :to="tab.to" class="tab" exact-active-class="active">
       <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
         <path :d="tab.icon" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
