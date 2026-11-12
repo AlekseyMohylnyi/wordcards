@@ -13,6 +13,10 @@
   --c-accent: #facc15;
   --c-accent-soft: #fef9c3;
   --c-flame: #f97316;
+  /* Snackbar (inverted surface) */
+  --c-toast-bg: #1e1b3a;
+  --c-toast-text: #ffffff;
+  --c-toast-action: #facc15;
   /* Badge backgrounds with a white icon (>= 3:1) */
   --c-badge-session: #d97706;
   --c-badge-streak: #ea580c;
@@ -61,6 +65,9 @@
     --c-unknown-text: #fb7185;
     --c-accent-soft: #3a3214;
     --c-flame: #fb923c;
+    --c-toast-bg: #f3f1ff;
+    --c-toast-text: #14112b;
+    --c-toast-action: #5b3fe6;
     --c-heat-0: #2c2658;
     --c-heat-1: #5a49b3;
     --c-heat-2: #7a60e0;

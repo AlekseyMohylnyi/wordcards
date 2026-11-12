@@ -130,7 +130,15 @@
     "title": "My words",
     "learned": "Learned",
     "review": "To review",
-    "empty": "Nothing here yet."
+    "search": "Search in English or Ukrainian",
+    "clear": "Clear search",
+    "say": "Pronounce: {word}",
+    "moveTo": "Move \"{word}\" to \"{list}\"",
+    "moved": "\"{word}\" → \"{list}\"",
+    "undo": "Undo",
+    "notFound": "Nothing found for \"{q}\".",
+    "emptyLearned": "No learned words yet. Start a session on the Learn tab.",
+    "emptyReview": "No words to review."
   },
   "settings": {
     "title": "Settings",
