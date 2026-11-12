@@ -9,6 +9,7 @@ import { router } from './router'
 import { i18n } from './i18n'
 import { requestPersistentStorage } from './db'
 import { useSettingsStore } from './stores/settings'
+import { watchColorScheme } from './theme'
 
 const app = createApp(App)
 app.use(createPinia())
@@ -16,6 +17,7 @@ app.use(router)
 app.use(i18n)
 
 void requestPersistentStorage()
+watchColorScheme()
 
 // Production only (no service worker in `npm run dev`): keep all word files available offline
 if (import.meta.env.PROD) {

@@ -29,7 +29,7 @@
   --c-heat-4: #4527c4;
   /* Hero card: white text on it must pass AA */
   --c-hero: #6c4cf1;
-  --c-hero-2: #8b5cf6;
+  --c-hero-2: #7c3aed;
   --c-on-hero: #ffffff;
 
   --c-bg: #f5f3ff;
@@ -194,5 +194,229 @@ input:focus-visible {
   *::after {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
+  }
+}
+
+/* ==========================================================================
+   Colour themes (Settings → Colour theme). Violet is the default above.
+   Each theme: tinted background, surfaces, borders, primary, hero gradient,
+   activity scale. White text on fill/hero ≥ 4.5:1; heat scales validated.
+   "Know" / "Don't know" colours stay the same in every theme.
+   ========================================================================== */
+
+:root[data-accent='green'] {
+  --c-bg: #ecfdf5;
+  --c-surface-2: #d1fae5;
+  --c-border: #a7f3d0;
+  --c-text: #052e1f;
+  --c-text-muted: #3f6b5a;
+  --c-primary: #047857;
+  --c-primary-strong: #065f46;
+  --c-primary-fill: #047857;
+  --c-hero: #047857;
+  --c-hero-2: #065f46;
+  --c-shadow: 0 8px 24px rgb(4 120 87 / 0.12);
+  --c-toast-bg: #052e1f;
+  --c-heat-0: #d1fae5;
+  --c-heat-1: #10b981;
+  --c-heat-2: #059669;
+  --c-heat-3: #047857;
+  --c-heat-4: #065f46;
+}
+
+:root[data-accent='blue'] {
+  --c-bg: #eff6ff;
+  --c-surface-2: #dbeafe;
+  --c-border: #bfdbfe;
+  --c-text: #0b1b3a;
+  --c-text-muted: #4a5a7a;
+  --c-primary: #2563eb;
+  --c-primary-strong: #1d4ed8;
+  --c-primary-fill: #2563eb;
+  --c-hero: #2563eb;
+  --c-hero-2: #1d4ed8;
+  --c-shadow: 0 8px 24px rgb(37 99 235 / 0.12);
+  --c-toast-bg: #0b1b3a;
+  --c-heat-0: #dbeafe;
+  --c-heat-1: #60a5fa;
+  --c-heat-2: #3b82f6;
+  --c-heat-3: #2563eb;
+  --c-heat-4: #1e40af;
+}
+
+:root[data-accent='cyan'] {
+  --c-bg: #ecfeff;
+  --c-surface-2: #cffafe;
+  --c-border: #a5f3fc;
+  --c-text: #062a33;
+  --c-text-muted: #3f6670;
+  --c-primary: #0e7490;
+  --c-primary-strong: #155e75;
+  --c-primary-fill: #0e7490;
+  --c-hero: #0e7490;
+  --c-hero-2: #155e75;
+  --c-shadow: 0 8px 24px rgb(14 116 144 / 0.12);
+  --c-toast-bg: #062a33;
+  --c-heat-0: #cffafe;
+  --c-heat-1: #06b6d4;
+  --c-heat-2: #0891b2;
+  --c-heat-3: #0e7490;
+  --c-heat-4: #164e63;
+}
+
+:root[data-accent='red'] {
+  --c-bg: #fff1f2;
+  --c-surface-2: #ffe4e6;
+  --c-border: #fecdd3;
+  --c-text: #3b0a12;
+  --c-text-muted: #7a4a52;
+  --c-primary: #be123c;
+  --c-primary-strong: #9f1239;
+  --c-primary-fill: #e11d48;
+  --c-hero: #e11d48;
+  --c-hero-2: #be123c;
+  --c-shadow: 0 8px 24px rgb(225 29 72 / 0.12);
+  --c-toast-bg: #3b0a12;
+  --c-heat-0: #ffe4e6;
+  --c-heat-1: #fb7185;
+  --c-heat-2: #f0365a;
+  --c-heat-3: #c8173e;
+  --c-heat-4: #881337;
+}
+
+:root[data-accent='yellow'] {
+  --c-bg: #fffbeb;
+  --c-surface-2: #fef3c7;
+  --c-border: #fde68a;
+  --c-text: #2b1d02;
+  --c-text-muted: #6b5a33;
+  --c-primary: #b45309;
+  --c-primary-strong: #92400e;
+  --c-primary-fill: #b45309;
+  --c-hero: #b45309;
+  --c-hero-2: #92400e;
+  --c-shadow: 0 8px 24px rgb(180 83 9 / 0.12);
+  --c-toast-bg: #2b1d02;
+  --c-heat-0: #fef3c7;
+  --c-heat-1: #f59e0b;
+  --c-heat-2: #d97706;
+  --c-heat-3: #b45309;
+  --c-heat-4: #78350f;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-accent='green'] {
+    --c-bg: #071a13;
+    --c-surface: #0f2a21;
+    --c-surface-2: #16392d;
+    --c-border: #1f4d3d;
+    --c-text: #ecfdf5;
+    --c-text-muted: #9cc9b6;
+    --c-primary: #34d399;
+    --c-primary-strong: #065f46;
+    --c-primary-fill: #047857;
+    --c-hero: #047857;
+    --c-hero-2: #065f46;
+    --c-shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+    --c-toast-bg: #ecfdf5;
+    --c-toast-text: #071a13;
+    --c-toast-action: #047857;
+    --c-heat-0: #16392d;
+    --c-heat-1: #1f7a57;
+    --c-heat-2: #2ba374;
+    --c-heat-3: #4ccb95;
+    --c-heat-4: #a7f3d0;
+  }
+
+  :root[data-accent='blue'] {
+    --c-bg: #0b1426;
+    --c-surface: #13203b;
+    --c-surface-2: #1b2c4f;
+    --c-border: #263b66;
+    --c-text: #eef4ff;
+    --c-text-muted: #a7b7d6;
+    --c-primary: #60a5fa;
+    --c-primary-strong: #1d4ed8;
+    --c-primary-fill: #2563eb;
+    --c-hero: #1d4ed8;
+    --c-hero-2: #2563eb;
+    --c-shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+    --c-toast-bg: #eef4ff;
+    --c-toast-text: #0b1426;
+    --c-toast-action: #2563eb;
+    --c-heat-0: #1b2c4f;
+    --c-heat-1: #3456a0;
+    --c-heat-2: #3b6fd0;
+    --c-heat-3: #6fa3f5;
+    --c-heat-4: #bfdbfe;
+  }
+
+  :root[data-accent='cyan'] {
+    --c-bg: #061a20;
+    --c-surface: #0c2a33;
+    --c-surface-2: #123844;
+    --c-border: #1c4c5a;
+    --c-text: #ecfeff;
+    --c-text-muted: #9ac8d2;
+    --c-primary: #22d3ee;
+    --c-primary-strong: #155e75;
+    --c-primary-fill: #0e7490;
+    --c-hero: #0e7490;
+    --c-hero-2: #155e75;
+    --c-shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+    --c-toast-bg: #ecfeff;
+    --c-toast-text: #061a20;
+    --c-toast-action: #0e7490;
+    --c-heat-0: #123844;
+    --c-heat-1: #176a7e;
+    --c-heat-2: #1e95ae;
+    --c-heat-3: #3cc6dd;
+    --c-heat-4: #a5f3fc;
+  }
+
+  :root[data-accent='red'] {
+    --c-bg: #1f0a0f;
+    --c-surface: #331219;
+    --c-surface-2: #451821;
+    --c-border: #5a2330;
+    --c-text: #fff1f2;
+    --c-text-muted: #d8a9b2;
+    --c-primary: #fb7185;
+    --c-primary-strong: #9f1239;
+    --c-primary-fill: #be123c;
+    --c-hero: #be123c;
+    --c-hero-2: #9f1239;
+    --c-shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+    --c-toast-bg: #fff1f2;
+    --c-toast-text: #1f0a0f;
+    --c-toast-action: #be123c;
+    --c-heat-0: #451821;
+    --c-heat-1: #93263f;
+    --c-heat-2: #c2334f;
+    --c-heat-3: #ef5a78;
+    --c-heat-4: #fecdd3;
+  }
+
+  :root[data-accent='yellow'] {
+    --c-bg: #1c1406;
+    --c-surface: #2e220c;
+    --c-surface-2: #3d2e10;
+    --c-border: #524016;
+    --c-text: #fffbeb;
+    --c-text-muted: #d6c49a;
+    --c-primary: #fbbf24;
+    --c-primary-strong: #92400e;
+    --c-primary-fill: #b45309;
+    --c-hero: #b45309;
+    --c-hero-2: #92400e;
+    --c-shadow: 0 8px 24px rgb(0 0 0 / 0.35);
+    --c-toast-bg: #fffbeb;
+    --c-toast-text: #1c1406;
+    --c-toast-action: #b45309;
+    --c-heat-0: #3d2e10;
+    --c-heat-1: #7a5a12;
+    --c-heat-2: #b5850f;
+    --c-heat-3: #f0b429;
+    --c-heat-4: #fde68a;
   }
 }

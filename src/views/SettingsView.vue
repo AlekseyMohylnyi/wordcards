@@ -8,6 +8,7 @@ import { isSpeechSupported, speak } from '@/services/speech'
 import { getSetting, setSetting } from '@/db'
 import { DEV_FORCE_CHECK_KEY } from '@/services/review'
 import OptionGroup from '@/components/OptionGroup.vue'
+import { ACCENTS, ACCENT_SWATCH, type Accent } from '@/theme'
 
 const { t } = useI18n()
 const { settings } = useSettingsStore()
@@ -21,7 +22,16 @@ const localeOptions = computed(() => [
   { value: 'uk' as const, label: t('settings.langUk'), lang: 'uk' },
   { value: 'en' as const, label: t('settings.langEn'), lang: 'en' },
 ])
-const sessionOptions = [10, 20, 30].map((n) => ({ value: n as Settings['sessionSize'], label: String(n) }))
+function onAccentKey(e: KeyboardEvent) {
+  const i = ACCENTS.indexOf(settings.accent)
+  const step = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? -1 : 0
+  if (!step) return
+  e.preventDefault()
+  settings.accent = ACCENTS[(i + step + ACCENTS.length) % ACCENTS.length] as Accent
+  requestAnimationFrame(() => (e.currentTarget as HTMLElement | null)?.querySelector<HTMLElement>('[aria-checked="true"]')?.focus())
+}
+
+const sessionOptions =[10, 20, 30].map((n) => ({ value: n as Settings['sessionSize'], label: String(n) }))
 const goalOptions = [10, 20, 30, 50].map((n) => ({ value: n as Settings['dailyGoal'], label: String(n) }))
 const voiceOptions = computed(() => [
   { value: 'en-US' as const, label: t('settings.voiceUS') },
@@ -80,6 +90,31 @@ onMounted(async () => {
       <div class="field">
         <span class="field-label">{{ t('settings.language') }}</span>
         <OptionGroup v-model="settings.locale" :options="localeOptions" :label="t('settings.language')" />
+      </div>
+
+      <div class="field">
+        <span class="field-label">{{ t('settings.theme') }}</span>
+        <div class="swatches" role="radiogroup" :aria-label="t('settings.theme')" @keydown="onAccentKey">
+          <button
+            v-for="a in ACCENTS"
+            :key="a"
+            type="button"
+            role="radio"
+            class="swatch"
+            :class="{ on: settings.accent === a }"
+            :aria-checked="settings.accent === a"
+            :tabindex="settings.accent === a ? 0 : -1"
+            @click="settings.accent = a"
+          >
+            <span class="dot" :style="{ background: ACCENT_SWATCH[a] }">
+              <svg v-if="settings.accent === a" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+            <span class="swatch-name">{{ t(`themes.${a}`) }}</span>
+          </button>
+        </div>
+        <span class="field-hint">{{ t('settings.themeHint') }}</span>
       </div>
     </section>
 
@@ -186,6 +221,48 @@ onMounted(async () => {
   margin: 0;
   font-size: 0.85rem;
   color: var(--c-text-muted);
+}
+
+/* ---------- colour themes ---------- */
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.swatch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--c-surface-2);
+}
+
+.swatch.on {
+  background: var(--c-surface);
+  box-shadow: inset 0 0 0 2px var(--c-text);
+}
+
+.dot {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.swatch-name {
+  min-width: 0;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--c-text-muted);
+}
+
+.swatch.on .swatch-name {
+  color: var(--c-text);
 }
 
 .sample {

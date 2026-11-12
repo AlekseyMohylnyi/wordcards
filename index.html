@@ -22,6 +22,14 @@
     <meta name="apple-mobile-web-app-title" content="WordCards" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="format-detection" content="telephone=no" />
+
+    <!-- Apply the saved colour theme before the first paint (no violet flash) -->
+    <script>
+      try {
+        var a = localStorage.getItem('wordcards-accent')
+        if (a && a !== 'violet' && /^[a-z]+$/.test(a)) document.documentElement.dataset.accent = a
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="app"></div>

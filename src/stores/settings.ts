@@ -4,9 +4,12 @@ import { getSetting, setSetting } from '@/db'
 import { setLocale, type Locale } from '@/i18n'
 import type { Level } from '@/types'
 import type { CategoryFilter } from '@/services/wordSource'
+import { applyAccent, isAccent, type Accent } from '@/theme'
 
 export interface Settings {
   locale: Locale
+  /** Colour theme */
+  accent: Accent
   sessionSize: 10 | 20 | 30
   dailyGoal: 10 | 20 | 30 | 50
   voice: 'en-US' | 'en-GB'
@@ -18,6 +21,7 @@ export interface Settings {
 
 export const DEFAULT_SETTINGS: Settings = {
   locale: 'uk',
+  accent: 'violet',
   sessionSize: 20,
   dailyGoal: 20,
   voice: 'en-US',
@@ -35,6 +39,8 @@ export const useSettingsStore = defineStore('settings', () => {
       ;(settings as Record<string, unknown>)[key] = await getSetting(key, DEFAULT_SETTINGS[key])
     }
     setLocale(settings.locale)
+    if (!isAccent(settings.accent)) settings.accent = DEFAULT_SETTINGS.accent
+    applyAccent(settings.accent)
     loaded.value = true
   }
 
@@ -46,6 +52,7 @@ export const useSettingsStore = defineStore('settings', () => {
         if (!loaded.value) return
         void setSetting(key, value)
         if (key === 'locale') setLocale(value as Locale)
+        if (key === 'accent') applyAccent(value as Accent)
       },
     )
   }

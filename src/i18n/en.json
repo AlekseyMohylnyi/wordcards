@@ -146,6 +146,8 @@
     "language": "Interface language",
     "langUk": "Українська",
     "langEn": "English",
+    "theme": "Colour theme",
+    "themeHint": "Light or dark follows your iPhone automatically.",
     "learning": "Learning",
     "sessionSize": "Session size",
     "sessionSizeHint": "How many cards in one session.",
@@ -171,6 +173,14 @@
     "devClear": "Clear data",
     "devClearConfirm": "Delete all progress, activity and badges?",
     "devDone": "Done. Open Stats."
+  },
+  "themes": {
+    "violet": "Violet",
+    "green": "Green",
+    "blue": "Blue",
+    "cyan": "Cyan",
+    "red": "Red",
+    "yellow": "Yellow"
   },
   "update": {
     "available": "A new version is available",
