@@ -13,6 +13,16 @@
   --c-accent: #facc15;
   --c-accent-soft: #fef9c3;
   --c-flame: #f97316;
+  /* Badge backgrounds with a white icon (>= 3:1) */
+  --c-badge-session: #d97706;
+  --c-badge-streak: #ea580c;
+  --c-badge-check: #15803d;
+  /* Activity heatmap: 0 = empty, 1..4 = more answers (validated ordinal ramp) */
+  --c-heat-0: #ede9fe;
+  --c-heat-1: #a996fa;
+  --c-heat-2: #8b72f6;
+  --c-heat-3: #6c4cf1;
+  --c-heat-4: #4527c4;
   /* Hero card: white text on it must pass AA */
   --c-hero: #6c4cf1;
   --c-hero-2: #8b5cf6;
@@ -51,6 +61,11 @@
     --c-unknown-text: #fb7185;
     --c-accent-soft: #3a3214;
     --c-flame: #fb923c;
+    --c-heat-0: #2c2658;
+    --c-heat-1: #5a49b3;
+    --c-heat-2: #7a60e0;
+    --c-heat-3: #a08aff;
+    --c-heat-4: #d0c4ff;
     --c-hero: #4f36d6;
     --c-hero-2: #6d43e0;
 
@@ -151,6 +166,19 @@ input:focus-visible {
 
 .muted {
   color: var(--c-text-muted);
+}
+
+/* Visible to screen readers only (data tables behind charts) */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

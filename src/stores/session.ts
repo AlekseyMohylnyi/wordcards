@@ -28,6 +28,8 @@ export const useSessionStore = defineStore('session', () => {
   const index = ref(0)
   const known = ref(0)
   const unknown = ref(0)
+  /** The summary already counted this session (badges awarded once) */
+  const completionHandled = ref(false)
   /** What is persisted for "continue"; the full original card list */
   let saved: SavedSession | null = null
 
@@ -48,6 +50,7 @@ export const useSessionStore = defineStore('session', () => {
     index.value = 0
     known.value = 0
     unknown.value = 0
+    completionHandled.value = false
     saved = null
   }
 
@@ -121,6 +124,7 @@ export const useSessionStore = defineStore('session', () => {
     index,
     known,
     unknown,
+    completionHandled,
     cards,
     total,
     position,

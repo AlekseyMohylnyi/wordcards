@@ -20,6 +20,22 @@ async function setForceCheckBanner(value: boolean) {
   await setSetting(DEV_FORCE_CHECK_KEY, value)
 }
 
+const devMessage = ref('')
+
+async function fillDemo() {
+  if (!import.meta.env.DEV || !window.confirm(t('settings.devDemoConfirm'))) return
+  const { fillDemoData } = await import('@/services/demo')
+  await fillDemoData()
+  devMessage.value = t('settings.devDone')
+}
+
+async function clearData() {
+  if (!import.meta.env.DEV || !window.confirm(t('settings.devClearConfirm'))) return
+  const { clearLearningData } = await import('@/services/demo')
+  await clearLearningData()
+  devMessage.value = t('settings.devDone')
+}
+
 onMounted(async () => {
   if (isDev) forceCheckBanner.value = await getSetting(DEV_FORCE_CHECK_KEY, false)
   wordCount.value = await countAllWords()
@@ -89,6 +105,11 @@ onMounted(async () => {
           @change="setForceCheckBanner(($event.target as HTMLInputElement).checked)"
         />
       </label>
+      <div class="dev-actions">
+        <button class="btn btn-primary" @click="fillDemo">{{ t('settings.devDemo') }}</button>
+        <button class="btn dev-clear" @click="clearData">{{ t('settings.devClear') }}</button>
+      </div>
+      <p v-if="devMessage" class="muted dev-msg" role="status">{{ devMessage }}</p>
     </section>
   </div>
 </template>
@@ -119,6 +140,22 @@ onMounted(async () => {
 
 .dev {
   border: 2px dashed var(--c-accent);
+}
+
+.dev-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 0;
+}
+
+.dev-clear {
+  background: var(--c-surface-2);
+  color: var(--c-text);
+}
+
+.dev-msg {
+  margin: 0 0 12px;
 }
 
 .toggle {

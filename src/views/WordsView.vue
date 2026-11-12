@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import type { WordStatus } from '@/types'
 
 const { t } = useI18n()
-const tab = ref<WordStatus>('learned')
+const route = useRoute()
+// Stats tiles open a specific tab: /words?tab=review
+const tab = ref<WordStatus>(route.query.tab === 'review' ? 'review' : 'learned')
 </script>
 
 <template>

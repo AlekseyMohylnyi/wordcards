@@ -89,7 +89,42 @@
   },
   "stats": {
     "title": "Stats",
-    "comingSoon": "Stats are coming soon."
+    "loading": "Counting…",
+    "empty": "Finish your first session and your stats will appear here.",
+    "learned": "Learned",
+    "review": "To review",
+    "streak": "Streak",
+    "best": "Best",
+    "days": "{n} day | {n} days",
+    "goal": "Daily goal",
+    "activity": "Activity",
+    "week": "Week",
+    "month": "Month",
+    "chartWeek": "Answers in the last 7 days",
+    "chartMonth": "Answers in the last 30 days",
+    "answers": "{n} answer | {n} answers",
+    "calendar": "Activity calendar",
+    "calendarHint": "Last 20 weeks. Darker means more answers relative to your daily goal.",
+    "less": "Less",
+    "more": "More",
+    "byLevel": "By level",
+    "byCategory": "By category",
+    "ofTotal": "{n} of {total}",
+    "toWords": "My words"
+  },
+  "badges": {
+    "title": "Badges",
+    "earnedCount": "{n} of {total} earned",
+    "newBadge": "New badge! | New badges!",
+    "earned": "Earned",
+    "firstSession": "First session",
+    "firstSessionCond": "Finish your first session",
+    "learnedTitle": "{n} word | {n} words",
+    "learnedCond": "Learn {n} word | Learn {n} words",
+    "streakTitle": "{n} day streak | {n} day streak",
+    "streakCond": "Practise {n} day in a row | Practise {n} days in a row",
+    "firstCheck": "First check",
+    "firstCheckCond": "Check your learned words"
   },
   "words": {
     "title": "My words",
@@ -112,7 +147,12 @@
     "version": "Version",
     "wordsInBase": "Words in database",
     "dev": "Development (npm run dev only)",
-    "devForceCheck": "Always show the check banner"
+    "devForceCheck": "Always show the check banner",
+    "devDemo": "Fill with demo data",
+    "devDemoConfirm": "Replace your progress, activity and badges with demo data?",
+    "devClear": "Clear data",
+    "devClearConfirm": "Delete all progress, activity and badges?",
+    "devDone": "Done. Open Stats."
   },
   "update": {
     "available": "A new version is available",

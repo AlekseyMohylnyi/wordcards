@@ -1,27 +1,40 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useSessionStore } from '@/stores/session'
 import { useSettingsStore } from '@/stores/settings'
 import { useStatsStore } from '@/stores/stats'
+import { completeSession, type BadgeDef } from '@/services/badges'
+import { useBadgeText } from '@/composables/useBadgeText'
 import ProgressRing from '@/components/ProgressRing.vue'
+import BadgeIcon from '@/components/BadgeIcon.vue'
 
 const { t } = useI18n()
 const router = useRouter()
 const session = useSessionStore()
 const stats = useStatsStore()
 const { settings } = useSettingsStore()
+const badgeText = useBadgeText()
 
 const goalLeft = computed(() => Math.max(0, settings.dailyGoal - stats.todayAnswered))
+const newBadges = ref<BadgeDef[]>([])
 
-onMounted(() => {
+onMounted(async () => {
   // Opened directly (e.g. after a reload) without a finished session
   if (session.answered === 0) {
     void router.replace({ name: 'home' })
     return
   }
   void stats.refresh()
+  if (!session.completionHandled) {
+    session.completionHandled = true
+    try {
+      newBadges.value = await completeSession(session.mode)
+    } catch (e) {
+      console.error('Failed to award badges', e)
+    }
+  }
 })
 </script>
 
@@ -34,6 +47,17 @@ onMounted(() => {
     </div>
     <h1 class="title">{{ session.mode === 'check' ? t('summary.checkTitle') : t('summary.title') }}</h1>
     <p class="muted sub">{{ t('summary.subtitle', { n: session.answered }) }}</p>
+
+    <!-- New badges earned with this session -->
+    <section v-if="newBadges.length" class="new-badges" role="status">
+      <h2>{{ t('badges.newBadge', newBadges.length) }}</h2>
+      <ul>
+        <li v-for="b in newBadges" :key="b.id">
+          <BadgeIcon :kind="b.kind" :size="40" />
+          <span>{{ badgeText.title(b) }}</span>
+        </li>
+      </ul>
+    </section>
 
     <div class="results">
       <div class="result know">
@@ -109,6 +133,49 @@ onMounted(() => {
 
 .sub {
   margin: 4px 0 20px;
+}
+
+.new-badges {
+  width: 100%;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  background: var(--c-accent-soft);
+  border: 2px solid var(--c-accent);
+  animation: pop 0.35s ease-out;
+}
+
+.new-badges h2 {
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+}
+
+.new-badges ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.new-badges li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 800;
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
 }
 
 .results {
