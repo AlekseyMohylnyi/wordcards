@@ -21,6 +21,10 @@
     "newLeft": "{n} нове | {n} нові | {n} нових",
     "levelSoon": "скоро",
     "start": "Почати",
+    "resumeTitle": "Незавершена сесія",
+    "resumeInfo": "{level} · {category} — {done} з {total}",
+    "continue": "Продовжити",
+    "startNew": "Почати нову",
     "levelEmpty": "Слова цього рівня з'являться згодом.",
     "noNewWords": "Нових слів тут не залишилося."
   },

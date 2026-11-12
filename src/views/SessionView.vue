@@ -33,12 +33,16 @@ const category = computed<CategoryFilter>(() => {
   return q === 'mix' || (CATEGORIES as readonly string[]).includes(q) ? (q as CategoryFilter) : settings.lastCategory
 })
 
-const position = computed(() => Math.min(session.index + 1, session.total))
-const progressPct = computed(() => (session.total ? (session.index / session.total) * 100 : 0))
+const position = computed(() => Math.min(session.position + 1, session.total))
+const progressPct = computed(() => (session.total ? (session.position / session.total) * 100 : 0))
 
 async function load() {
   phase.value = 'loading'
   try {
+    if (route.query.resume === '1' && (await session.resume())) {
+      phase.value = 'playing'
+      return
+    }
     const plan = await session.start(level.value, category.value, settings.sessionSize)
     phase.value = plan.exhausted || plan.cards.length === 0 ? 'exhausted' : 'playing'
   } catch (e) {
@@ -58,9 +62,13 @@ async function decide(dir: SwipeDir) {
   await swipe.value?.fly(dir)
   await save
   flipped.value = false
-  session.advance()
+  // remembers the position for "continue" on the Home screen
+  const progressSaved = session.advance().catch((e) => console.error('Failed to save session position', e))
   busy.value = false
-  if (session.done) void router.replace({ name: 'summary' })
+  if (session.done) {
+    await progressSaved
+    void router.replace({ name: 'summary' })
+  }
 }
 
 function toggleFlip() {
@@ -138,7 +146,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
           {{ t('session.know') }}
         </button>
       </div>
-      <button class="finish" @click="finish">{{ t('session.finish') }}</button>
+      <button class="btn finish" @click="finish">{{ t('session.finish') }}</button>
     </template>
 
     <!-- Loading -->
@@ -312,13 +320,17 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
 }
 
 .finish {
-  align-self: center;
-  margin-top: 6px;
-  padding: 0 20px;
-  font-weight: 800;
-  color: var(--c-text-muted);
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  width: 100%;
+  min-height: 48px;
+  margin-top: 10px;
+  padding: 8px 20px;
+  font-size: 1rem;
+  background: var(--c-surface-2);
+  color: var(--c-text);
+}
+
+.finish:active {
+  transform: scale(0.98);
 }
 
 .save-error {
@@ -367,6 +379,6 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
 
 .secondary {
   background: var(--c-surface-2);
-  color: var(--c-primary);
+  color: var(--c-text);
 }
 </style>

@@ -21,6 +21,10 @@
     "newLeft": "{n} new | {n} new",
     "levelSoon": "soon",
     "start": "Start",
+    "resumeTitle": "Unfinished session",
+    "resumeInfo": "{level} · {category} — {done} of {total}",
+    "continue": "Continue",
+    "startNew": "Start new",
     "levelEmpty": "Words for this level are coming soon.",
     "noNewWords": "No new words left here."
   },

@@ -5,6 +5,7 @@ import { useI18n } from 'vue-i18n'
 import { CATEGORIES, LEVELS, type Level } from '@/types'
 import { getSeenIds } from '@/db'
 import { countNewByLevel, type CategoryFilter, type LevelCount } from '@/services/wordSource'
+import { isResumable, loadActiveSession, type SavedSession } from '@/services/activeSession'
 import { useSettingsStore } from '@/stores/settings'
 import { useStatsStore } from '@/stores/stats'
 import ProgressRing from '@/components/ProgressRing.vue'
@@ -27,10 +28,30 @@ const greeting = computed(() => {
   return t('home.greetingNight')
 })
 
+// Unfinished session (user pressed "Finish" or closed the app mid-session)
+const pending = ref<SavedSession | null>(null)
+const pendingInfo = computed(() => {
+  const p = pending.value
+  if (!p) return ''
+  return t('home.resumeInfo', {
+    level: p.level,
+    category: t(`categories.${p.category}`),
+    done: p.index,
+    total: p.cards.length,
+  })
+})
+
 onMounted(async () => {
   void stats.refresh()
+  void loadActiveSession().then((s) => {
+    pending.value = isResumable(s) ? s : null
+  })
   counts.value = await countNewByLevel(await getSeenIds())
 })
+
+function resume() {
+  void router.push({ name: 'session', query: { resume: '1' } })
+}
 
 function levelHint(level: Level): string {
   const c = counts.value?.[level]
@@ -129,16 +150,28 @@ function start() {
     </section>
 
     <div class="start-bar">
-      <p v-if="startHint" class="start-hint">{{ startHint }}</p>
-      <button class="btn btn-primary start" :disabled="!canStart" @click="start">{{ t('home.start') }}</button>
+      <!-- Unfinished session: continue it or start a new one -->
+      <template v-if="pending">
+        <p class="start-hint pending-info">
+          <strong>{{ t('home.resumeTitle') }}:</strong> {{ pendingInfo }}
+        </p>
+        <div class="start-pair">
+          <button class="btn start-new" :disabled="!canStart" @click="start">{{ t('home.startNew') }}</button>
+          <button class="btn btn-primary start" @click="resume">{{ t('home.continue') }}</button>
+        </div>
+      </template>
+      <template v-else>
+        <p v-if="startHint" class="start-hint">{{ startHint }}</p>
+        <button class="btn btn-primary start" :disabled="!canStart" @click="start">{{ t('home.start') }}</button>
+      </template>
     </div>
   </div>
 </template>
 
 <style scoped>
 .home {
-  /* room for the fixed Start button */
-  padding-bottom: 110px;
+  /* room for the fixed Start button (and the "continue" line) */
+  padding-bottom: 160px;
 }
 
 /* ---------- hero ---------- */
@@ -344,5 +377,43 @@ function start() {
   text-align: center;
   font-size: 0.9rem;
   color: var(--c-text-muted);
+}
+
+.pending-info {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--c-surface);
+  color: var(--c-text);
+  box-shadow: var(--c-shadow);
+}
+
+.start-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.start-pair .btn {
+  padding-left: 10px;
+  padding-right: 10px;
+  white-space: nowrap;
+}
+
+.start-pair .start {
+  font-size: 1.15rem;
+}
+
+.start-new {
+  min-height: 56px;
+  font-size: 1.05rem;
+  background: var(--c-surface);
+  color: var(--c-text);
+  border: 2px solid var(--c-border);
+  box-shadow: var(--c-shadow);
+}
+
+.start-new:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 </style>
