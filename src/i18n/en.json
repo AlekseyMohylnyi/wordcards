@@ -49,10 +49,35 @@
   },
   "session": {
     "finish": "Finish",
-    "comingSoon": "Cards are coming in the next stage."
+    "progress": "Card {current} of {total}",
+    "know": "I know",
+    "dontKnow": "Don't know",
+    "stampKnow": "KNOW",
+    "stampUnknown": "DON'T KNOW",
+    "review": "Review",
+    "speak": "Pronounce the word",
+    "tapToFlip": "Tap to flip",
+    "synonyms": "Synonyms",
+    "loading": "Preparing words…",
+    "loadError": "Could not load the words. Check your connection and try again.",
+    "saveError": "Could not save the answer.",
+    "exhaustedTitle": "No more new words in this category",
+    "exhaustedText": "New words left: {n}. Choose another category or level, or go through the ones left.",
+    "emptyText": "There are no new words left here. Choose another category or level.",
+    "playAvailable": "Go through the rest ({n})",
+    "chooseOther": "Choose another category",
+    "backHome": "Home",
+    "retry": "Try again"
   },
   "summary": {
-    "title": "Summary",
+    "title": "Session complete!",
+    "subtitle": "Answers: {n}",
+    "known": "I know",
+    "unknown": "Don't know",
+    "streak": "Streak",
+    "goal": "Daily goal",
+    "goalDone": "Today's goal is done!",
+    "goalLeft": "{n} more to the goal",
     "toHome": "Home"
   },
   "stats": {
