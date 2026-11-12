@@ -6,6 +6,14 @@ const { t } = useI18n()
 
 <template>
   <div class="page">
-    <RouterLink to="/" class="btn btn-primary">{{ t('session.finish') }}</RouterLink>
+    <p class="card muted">{{ t('session.comingSoon') }}</p>
+    <RouterLink to="/" class="btn btn-primary finish">{{ t('session.finish') }}</RouterLink>
   </div>
 </template>
+
+<style scoped>
+.finish {
+  margin-top: 16px;
+  text-decoration: none;
+}
+</style>

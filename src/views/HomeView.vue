@@ -1,101 +1,348 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { CATEGORIES, LEVELS, type Category, type Level } from '@/types'
+import { CATEGORIES, LEVELS, type Level } from '@/types'
+import { getSeenIds } from '@/db'
+import { countNewByLevel, type CategoryFilter, type LevelCount } from '@/services/wordSource'
+import { useSettingsStore } from '@/stores/settings'
+import { useStatsStore } from '@/stores/stats'
+import ProgressRing from '@/components/ProgressRing.vue'
+import CategoryIcon from '@/components/CategoryIcon.vue'
+import ReviewBanner from '@/components/ReviewBanner.vue'
 
 const { t } = useI18n()
+const router = useRouter()
+const { settings } = useSettingsStore()
+const stats = useStatsStore()
 
-const level = ref<Level>('A1')
-const category = ref<Category | 'mix'>('mix')
-const categories: (Category | 'mix')[] = ['mix', ...CATEGORIES]
+const categories: CategoryFilter[] = ['mix', ...CATEGORIES]
+const counts = ref<Record<Level, LevelCount> | null>(null)
+
+const greeting = computed(() => {
+  const h = new Date().getHours()
+  if (h >= 5 && h < 12) return t('home.greetingMorning')
+  if (h >= 12 && h < 18) return t('home.greetingDay')
+  if (h >= 18 && h < 23) return t('home.greetingEvening')
+  return t('home.greetingNight')
+})
+
+onMounted(async () => {
+  void stats.refresh()
+  counts.value = await countNewByLevel(await getSeenIds())
+})
+
+function levelHint(level: Level): string {
+  const c = counts.value?.[level]
+  if (!c) return '…'
+  if (c.total === 0) return t('home.levelSoon')
+  return t('home.newLeft', c.fresh)
+}
+
+const selectedCount = computed(() => counts.value?.[settings.lastLevel])
+const startHint = computed(() => {
+  const c = selectedCount.value
+  if (!c) return ''
+  if (c.total === 0) return t('home.levelEmpty')
+  return ''
+})
+const canStart = computed(() => (selectedCount.value?.total ?? 0) > 0)
+
+// Stage 5: learned >= 20 and last check >= 7 days ago
+const showReviewBanner = computed(() => false)
+
+function start() {
+  void router.push({ name: 'session', query: { level: settings.lastLevel, category: settings.lastCategory } })
+}
 </script>
 
 <template>
-  <div class="page">
-    <h1 class="page-title">{{ t('home.title') }}</h1>
+  <div class="page home">
+    <header class="hero">
+      <div class="hello">
+        <h1>{{ greeting }}</h1>
+        <p class="sub">{{ t('home.subtitle') }}</p>
+        <div
+          class="streak"
+          :class="{ done: stats.streak.todayDone }"
+          role="img"
+          :aria-label="t('home.streakLabel', stats.streak.current)"
+        >
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+            <path
+              d="M12 22c4.4 0 7.5-3 7.5-7.3 0-4.6-3.6-7.4-5.4-12.2-2.8 2-4.6 5-4.3 8.2-1.4-.8-2.3-2.2-2.6-3.8C5.3 8.9 4.5 11.4 4.5 14.7 4.5 19 7.6 22 12 22z"
+              fill="currentColor"
+            />
+          </svg>
+          <strong>{{ stats.streak.current }}</strong>
+          <span>{{ t('home.streakDays', stats.streak.current) }}</span>
+        </div>
+      </div>
+      <ProgressRing
+        :value="stats.todayAnswered"
+        :max="settings.dailyGoal"
+        :size="92"
+        :stroke="10"
+        color="var(--c-accent)"
+        track-color="rgb(255 255 255 / 0.22)"
+        :label="t('home.goalLabel', { done: stats.todayAnswered, goal: settings.dailyGoal })"
+      >
+        <strong class="ring-value">{{ stats.todayAnswered }}</strong>
+        <small class="ring-goal">{{ t('home.goalOf', { goal: settings.dailyGoal }) }}</small>
+      </ProgressRing>
+    </header>
 
-    <section class="card block">
-      <h2 class="label">{{ t('home.level') }}</h2>
-      <div class="chips levels">
+    <ReviewBanner v-if="showReviewBanner" :count="0" />
+
+    <section class="block">
+      <h2 class="section-title">{{ t('home.level') }}</h2>
+      <div class="levels">
         <button
           v-for="l in LEVELS"
           :key="l"
-          class="chip"
-          :class="{ selected: level === l }"
-          :aria-pressed="level === l"
-          @click="level = l"
+          class="level"
+          :class="{ selected: settings.lastLevel === l, empty: counts?.[l]?.total === 0 }"
+          :aria-pressed="settings.lastLevel === l"
+          @click="settings.lastLevel = l"
         >
-          {{ l }}
+          <span class="level-name">{{ l }}</span>
+          <span class="level-hint">{{ levelHint(l) }}</span>
         </button>
       </div>
     </section>
 
-    <section class="card block">
-      <h2 class="label">{{ t('home.category') }}</h2>
-      <div class="chips">
+    <section class="block">
+      <h2 class="section-title">{{ t('home.category') }}</h2>
+      <div class="tiles">
         <button
           v-for="c in categories"
           :key="c"
-          class="chip"
-          :class="{ selected: category === c }"
-          :aria-pressed="category === c"
-          @click="category = c"
+          class="tile"
+          :class="{ selected: settings.lastCategory === c, mix: c === 'mix' }"
+          :aria-pressed="settings.lastCategory === c"
+          @click="settings.lastCategory = c"
         >
-          {{ t(`categories.${c}`) }}
+          <span class="tile-icon"><CategoryIcon :name="c" :size="22" /></span>
+          <span class="tile-name">{{ t(`categories.${c}`) }}</span>
         </button>
       </div>
     </section>
 
-    <button class="btn btn-primary start" disabled>{{ t('home.start') }}</button>
-    <p class="muted hint">{{ t('home.comingSoon') }}</p>
+    <div class="start-bar">
+      <p v-if="startHint" class="start-hint">{{ startHint }}</p>
+      <button class="btn btn-primary start" :disabled="!canStart" @click="start">{{ t('home.start') }}</button>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.block {
-  margin-bottom: 16px;
+.home {
+  /* room for the fixed Start button */
+  padding-bottom: 110px;
 }
 
-.label {
-  font-size: 1.05rem;
-  margin-bottom: 12px;
-}
-
-.chips {
+/* ---------- hero ---------- */
+.hero {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--c-hero), var(--c-hero-2));
+  color: var(--c-on-hero);
+  box-shadow: var(--c-shadow);
 }
 
+.hello h1 {
+  font-size: 1.6rem;
+  line-height: 1.15;
+}
+
+.sub {
+  margin: 4px 0 12px;
+  opacity: 0.9;
+}
+
+.streak {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 6px 8px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.16);
+  font-size: 0.9rem;
+}
+
+.streak svg {
+  color: rgb(255 255 255 / 0.55);
+}
+
+.streak.done svg {
+  color: var(--c-flame);
+  filter: drop-shadow(0 0 4px rgb(249 115 22 / 0.6));
+}
+
+.streak strong {
+  font-size: 1.15rem;
+  font-weight: 900;
+}
+
+.ring-value {
+  font-size: 1.5rem;
+  font-weight: 900;
+}
+
+.ring-goal {
+  font-size: 0.75rem;
+  opacity: 0.9;
+}
+
+/* ---------- sections ---------- */
+.block {
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 1.15rem;
+  margin-bottom: 10px;
+}
+
+/* ---------- levels ---------- */
 .levels {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
 }
 
-.chip {
-  padding: 8px 14px;
-  border-radius: 999px;
-  background: var(--c-surface-2);
-  font-weight: 800;
+.level {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 64px;
+  padding: 8px 4px;
+  border-radius: var(--radius-md);
+  background: var(--c-surface);
+  border: 2px solid var(--c-border);
+  box-shadow: var(--c-shadow);
 }
 
-.chip.selected {
-  background: var(--c-primary);
+.level-name {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--c-primary);
+}
+
+.level-hint {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--c-text-muted);
+}
+
+.level.empty .level-name {
+  color: var(--c-text-muted);
+}
+
+.level.selected {
+  background: var(--c-primary-fill);
+  border-color: var(--c-primary-fill);
+}
+
+.level.selected .level-name,
+.level.selected .level-hint {
   color: var(--c-on-primary);
 }
 
+/* ---------- category tiles ---------- */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.tile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 60px;
+  padding: 10px 12px;
+  text-align: left;
+  border-radius: var(--radius-md);
+  background: var(--c-surface);
+  border: 2px solid transparent;
+  box-shadow: var(--c-shadow);
+}
+
+.tile.mix {
+  grid-column: 1 / -1;
+}
+
+.tile-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background: var(--c-surface-2);
+  color: var(--c-primary);
+}
+
+.tile-name {
+  font-weight: 800;
+  font-size: 0.98rem;
+  line-height: 1.15;
+}
+
+.tile.selected {
+  background: var(--c-primary-fill);
+  color: var(--c-on-primary);
+}
+
+.tile.selected .tile-icon {
+  background: rgb(255 255 255 / 0.2);
+  color: var(--c-on-primary);
+}
+
+/* ---------- start ---------- */
+.start-bar {
+  position: fixed;
+  z-index: 5;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--tabbar-h) + var(--safe-bottom));
+  padding: 24px calc(16px + var(--safe-right)) 12px calc(16px + var(--safe-left));
+  background: linear-gradient(to bottom, transparent, var(--c-bg) 40%);
+  pointer-events: none;
+}
+
+.start-bar > * {
+  max-width: 528px;
+  margin-left: auto;
+  margin-right: auto;
+  pointer-events: auto;
+}
+
 .start {
+  display: flex;
   width: 100%;
+  min-height: 56px;
   font-size: 1.25rem;
-  padding: 16px;
 }
 
 .start:disabled {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: default;
+  box-shadow: none;
 }
 
-.hint {
+.start-hint {
+  margin-bottom: 8px;
   text-align: center;
+  font-size: 0.9rem;
+  color: var(--c-text-muted);
 }
 </style>

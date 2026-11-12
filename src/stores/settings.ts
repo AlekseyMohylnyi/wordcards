@@ -2,6 +2,8 @@ import { defineStore } from 'pinia'
 import { reactive, ref, watch } from 'vue'
 import { getSetting, setSetting } from '@/db'
 import { setLocale, type Locale } from '@/i18n'
+import type { Level } from '@/types'
+import type { CategoryFilter } from '@/services/wordSource'
 
 export interface Settings {
   locale: Locale
@@ -9,6 +11,9 @@ export interface Settings {
   dailyGoal: 10 | 20 | 30 | 50
   voice: 'en-US' | 'en-GB'
   rate: 'normal' | 'slow'
+  /** Last level / category chosen on the Home screen */
+  lastLevel: Level
+  lastCategory: CategoryFilter
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -17,6 +22,8 @@ export const DEFAULT_SETTINGS: Settings = {
   dailyGoal: 20,
   voice: 'en-US',
   rate: 'normal',
+  lastLevel: 'A1',
+  lastCategory: 'mix',
 }
 
 export const useSettingsStore = defineStore('settings', () => {

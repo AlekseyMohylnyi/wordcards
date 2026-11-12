@@ -7,10 +7,28 @@
   },
   "home": {
     "title": "Learn",
+    "greetingMorning": "Good morning!",
+    "greetingDay": "Good afternoon!",
+    "greetingEvening": "Good evening!",
+    "greetingNight": "Good night!",
+    "subtitle": "Ready for new words?",
+    "streakDays": "day in a row | days in a row",
+    "streakLabel": "Streak: {n} day in a row | Streak: {n} days in a row",
+    "goalLabel": "Daily goal: {done} of {goal}",
+    "goalOf": "of {goal}",
     "level": "Level",
     "category": "Category",
+    "newLeft": "{n} new | {n} new",
+    "levelSoon": "soon",
     "start": "Start",
-    "comingSoon": "Word selection is coming in the next stage."
+    "levelEmpty": "Words for this level are coming soon.",
+    "noNewWords": "No new words left here."
+  },
+  "review": {
+    "title": "Check your learned words",
+    "subtitle": "{n} word is waiting | {n} words are waiting",
+    "start": "Check",
+    "later": "Later"
   },
   "categories": {
     "mix": "Mix",
@@ -30,7 +48,8 @@
     "communication": "Communication"
   },
   "session": {
-    "finish": "Finish"
+    "finish": "Finish",
+    "comingSoon": "Cards are coming in the next stage."
   },
   "summary": {
     "title": "Summary",

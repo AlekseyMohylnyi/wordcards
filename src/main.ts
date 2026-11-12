@@ -16,6 +16,9 @@ app.use(router)
 app.use(i18n)
 
 void requestPersistentStorage()
-void useSettingsStore().load()
 
-app.mount('#app')
+// Mount after settings are read so the UI starts with the saved language and last choices
+useSettingsStore()
+  .load()
+  .catch((e) => console.error('Failed to load settings', e))
+  .finally(() => app.mount('#app'))

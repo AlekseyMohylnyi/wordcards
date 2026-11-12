@@ -33,6 +33,11 @@ export async function requestPersistentStorage(): Promise<boolean> {
   return false
 }
 
+/** IDs of every word the user has answered (learned or on review). */
+export async function getSeenIds(): Promise<Set<string>> {
+  return new Set(await db.progress.toCollection().primaryKeys())
+}
+
 export async function getSetting<T>(key: string, fallback: T): Promise<T> {
   const row = await db.settings.get(key)
   return row === undefined ? fallback : (row.value as T)
