@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- WordCards app icon: purple background, two cards fanned out, "Aa" on the front card.
+       Letters are strokes (not text) so the icon renders the same everywhere. -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8160FA"/>
+      <stop offset="1" stop-color="#5A3AE0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="512" height="512" fill="url(#bg)"/>
+
+  <!-- back card (yellow), fanned to the right -->
+  <g transform="rotate(14 286 262)">
+    <rect x="192" y="138" width="200" height="260" rx="30" fill="#3B1FB0" opacity="0.28" transform="translate(6 10)"/>
+    <rect x="192" y="138" width="200" height="260" rx="30" fill="#FACC15"/>
+  </g>
+
+  <!-- front card (white), fanned to the left -->
+  <g transform="rotate(-8 236 262)">
+    <rect x="136" y="132" width="200" height="260" rx="30" fill="#3B1FB0" opacity="0.3" transform="translate(6 10)"/>
+    <rect x="136" y="132" width="200" height="260" rx="30" fill="#FFFFFF"/>
+
+    <g fill="none" stroke="#6C4CF1" stroke-width="22" stroke-linecap="round" stroke-linejoin="round">
+      <!-- A -->
+      <path d="M160 322 L195 206 L230 322"/>
+      <path d="M173 280 H217"/>
+      <!-- a -->
+      <circle cx="271" cy="291" r="31"/>
+      <path d="M302 262 V322"/>
+    </g>
+  </g>
+</svg>

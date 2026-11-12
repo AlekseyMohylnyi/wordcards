@@ -17,6 +17,11 @@ app.use(i18n)
 
 void requestPersistentStorage()
 
+// Production only (no service worker in `npm run dev`): keep all word files available offline
+if (import.meta.env.PROD) {
+  void import('./services/offline').then((m) => m.warmWordCache()).catch((e) => console.warn('Word cache warm-up failed', e))
+}
+
 // Mount after settings are read so the UI starts with the saved language and last choices
 useSettingsStore()
   .load()

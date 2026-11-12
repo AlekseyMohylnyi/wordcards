@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useRegisterSW } from 'virtual:pwa-register/vue'
 import { useI18n } from 'vue-i18n'
 
@@ -37,12 +38,33 @@ const { needRefresh, updateServiceWorker } = useRegisterSW({
 function dismiss() {
   needRefresh.value = false
 }
+
+/**
+ * Activate the waiting service worker and reload into the new version.
+ * We reload ourselves on `controllerchange` (with clientsClaim the plugin's own reload
+ * does not always fire) and, as a last resort, after a few seconds.
+ */
+const updating = ref(false)
+let reloaded = false
+function reloadOnce() {
+  if (reloaded) return
+  reloaded = true
+  window.location.reload()
+}
+
+function applyUpdate() {
+  if (updating.value) return
+  updating.value = true
+  navigator.serviceWorker?.addEventListener('controllerchange', reloadOnce, { once: true })
+  void updateServiceWorker(true)
+  setTimeout(reloadOnce, 3000)
+}
 </script>
 
 <template>
   <div v-if="needRefresh" class="update" role="status">
     <span>{{ t('update.available') }}</span>
-    <button class="btn btn-primary small" @click="updateServiceWorker(true)">{{ t('update.reload') }}</button>
+    <button class="btn btn-primary small" :disabled="updating" @click="applyUpdate">{{ t('update.reload') }}</button>
     <button class="close" :aria-label="t('update.dismiss')" @click="dismiss">✕</button>
   </div>
 </template>
