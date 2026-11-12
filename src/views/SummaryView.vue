@@ -32,7 +32,7 @@ onMounted(() => {
         <path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
     </div>
-    <h1 class="title">{{ t('summary.title') }}</h1>
+    <h1 class="title">{{ session.mode === 'check' ? t('summary.checkTitle') : t('summary.title') }}</h1>
     <p class="muted sub">{{ t('summary.subtitle', { n: session.answered }) }}</p>
 
     <div class="results">

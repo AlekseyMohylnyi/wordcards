@@ -16,7 +16,7 @@ const router = useRouter()
 const session = useSessionStore()
 const { settings } = useSettingsStore()
 
-type Phase = 'loading' | 'exhausted' | 'playing' | 'error'
+type Phase = 'loading' | 'exhausted' | 'checkEmpty' | 'playing' | 'error'
 const phase = ref<Phase>('loading')
 const flipped = ref(false)
 const busy = ref(false)
@@ -39,6 +39,11 @@ const progressPct = computed(() => (session.total ? (session.position / session.
 async function load() {
   phase.value = 'loading'
   try {
+    if (route.query.mode === 'check') {
+      const plan = await session.startCheck(settings.sessionSize)
+      phase.value = plan.cards.length ? 'playing' : 'checkEmpty'
+      return
+    }
     if (route.query.resume === '1' && (await session.resume())) {
       phase.value = 'playing'
       return
@@ -112,6 +117,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
         </div>
         <div class="bar" aria-hidden="true"><div class="bar-fill" :style="{ width: `${progressPct}%` }" /></div>
       </header>
+      <p v-if="session.mode === 'check'" class="mode-chip">{{ t('session.checkMode') }}</p>
 
       <div class="deck">
         <div v-if="session.next" :key="`under-${session.next.word.id}`" class="slot under" aria-hidden="true">
@@ -169,6 +175,16 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
             {{ t('session.playAvailable', { n: session.cards.length }) }}
           </button>
           <button class="btn secondary" @click="finish">{{ t('session.chooseOther') }}</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Check mode without learned words -->
+    <div v-else-if="phase === 'checkEmpty'" class="center">
+      <div class="card notice">
+        <p>{{ t('session.checkEmpty') }}</p>
+        <div class="notice-actions">
+          <button class="btn btn-primary" @click="finish">{{ t('session.backHome') }}</button>
         </div>
       </div>
     </div>
@@ -231,6 +247,17 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
   border-radius: inherit;
   background: linear-gradient(90deg, var(--c-primary), var(--c-know));
   transition: width 0.35s ease-out;
+}
+
+.mode-chip {
+  align-self: center;
+  margin: -6px 0 10px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: var(--c-accent-soft);
+  border: 2px solid var(--c-accent);
+  font-size: 0.85rem;
+  font-weight: 900;
 }
 
 /* ---------- card deck ---------- */

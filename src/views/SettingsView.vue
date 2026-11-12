@@ -3,13 +3,25 @@ import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useSettingsStore } from '@/stores/settings'
 import { countAllWords } from '@/services/wordSource'
+import { getSetting, setSetting } from '@/db'
+import { DEV_FORCE_CHECK_KEY } from '@/services/review'
 
 const { t } = useI18n()
 const { settings } = useSettingsStore()
 const version = __APP_VERSION__
 const wordCount = ref<number | null>(null)
 
+// Developer options: only in `npm run dev`, stripped from the production build
+const isDev = import.meta.env.DEV
+const forceCheckBanner = ref(false)
+
+async function setForceCheckBanner(value: boolean) {
+  forceCheckBanner.value = value
+  await setSetting(DEV_FORCE_CHECK_KEY, value)
+}
+
 onMounted(async () => {
+  if (isDev) forceCheckBanner.value = await getSetting(DEV_FORCE_CHECK_KEY, false)
   wordCount.value = await countAllWords()
 })
 </script>
@@ -65,6 +77,19 @@ onMounted(async () => {
         <span class="muted">{{ wordCount ?? '…' }}</span>
       </div>
     </section>
+
+    <section v-if="isDev" class="card list dev">
+      <h2 class="section">{{ t('settings.dev') }}</h2>
+      <label class="row">
+        <span>{{ t('settings.devForceCheck') }}</span>
+        <input
+          type="checkbox"
+          class="toggle"
+          :checked="forceCheckBanner"
+          @change="setForceCheckBanner(($event.target as HTMLInputElement).checked)"
+        />
+      </label>
+    </section>
   </div>
 </template>
 
@@ -90,6 +115,16 @@ onMounted(async () => {
 
 .row:last-child {
   border-bottom: none;
+}
+
+.dev {
+  border: 2px dashed var(--c-accent);
+}
+
+.toggle {
+  width: 28px;
+  height: 28px;
+  accent-color: var(--c-primary-fill);
 }
 
 select {

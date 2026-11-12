@@ -6,6 +6,7 @@ import { CATEGORIES, LEVELS, type Level } from '@/types'
 import { getSeenIds } from '@/db'
 import { countNewByLevel, type CategoryFilter, type LevelCount } from '@/services/wordSource'
 import { isResumable, loadActiveSession, type SavedSession } from '@/services/activeSession'
+import { loadCheckBannerState, snoozeCheckBanner, type CheckBannerState } from '@/services/review'
 import { useSettingsStore } from '@/stores/settings'
 import { useStatsStore } from '@/stores/stats'
 import ProgressRing from '@/components/ProgressRing.vue'
@@ -46,6 +47,9 @@ onMounted(async () => {
   void loadActiveSession().then((s) => {
     pending.value = isResumable(s) ? s : null
   })
+  void loadCheckBannerState(settings.sessionSize).then((s) => {
+    check.value = s
+  })
   counts.value = await countNewByLevel(await getSeenIds())
 })
 
@@ -69,8 +73,17 @@ const startHint = computed(() => {
 })
 const canStart = computed(() => (selectedCount.value?.total ?? 0) > 0)
 
-// Stage 5: learned >= 20 and last check >= 7 days ago
-const showReviewBanner = computed(() => false)
+// Rule 10: "Check your learned words" banner
+const check = ref<CheckBannerState>({ show: false, count: 0 })
+
+function startCheck() {
+  void router.push({ name: 'session', query: { mode: 'check' } })
+}
+
+async function checkLater() {
+  check.value = { ...check.value, show: false }
+  await snoozeCheckBanner()
+}
 
 function start() {
   void router.push({ name: 'session', query: { level: settings.lastLevel, category: settings.lastCategory } })
@@ -113,7 +126,7 @@ function start() {
       </ProgressRing>
     </header>
 
-    <ReviewBanner v-if="showReviewBanner" :count="0" />
+    <ReviewBanner v-if="check.show" :count="check.count" @start="startCheck" @later="checkLater" />
 
     <section class="block">
       <h2 class="section-title">{{ t('home.level') }}</h2>

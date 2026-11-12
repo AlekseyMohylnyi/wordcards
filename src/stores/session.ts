@@ -12,8 +12,13 @@ import {
   toSavedCards,
   type SavedSession,
 } from '@/services/activeSession'
+import { buildCheckSession, loadLearnedRecords, recordCheckAnswer } from '@/services/review'
+
+/** 'learn': new + review words; 'check': periodic check of learned words (rule 10) */
+export type SessionMode = 'learn' | 'check'
 
 export const useSessionStore = defineStore('session', () => {
+  const mode = ref<SessionMode>('learn')
   const level = ref<Level>('A1')
   const category = ref<CategoryFilter>('mix')
   // shallow: words stay plain objects (no deep proxies; they are saved to IndexedDB)
@@ -34,7 +39,8 @@ export const useSessionStore = defineStore('session', () => {
   const answered = computed(() => known.value + unknown.value)
   const done = computed(() => cards.value.length > 0 && index.value >= cards.value.length)
 
-  function reset(l: Level, c: CategoryFilter) {
+  function reset(l: Level, c: CategoryFilter, m: SessionMode = 'learn') {
+    mode.value = m
     level.value = l
     category.value = c
     plan.value = null
@@ -53,6 +59,17 @@ export const useSessionStore = defineStore('session', () => {
     plan.value = p
     const now = Date.now()
     saved = { level: l, category: c, cards: toSavedCards(p.cards), index: 0, known: 0, unknown: 0, startedAt: now, updatedAt: now }
+    return p
+  }
+
+  /**
+   * Check session: learned words only, oldest checked first.
+   * It is not saved for "continue" and does not touch an unfinished learning session.
+   */
+  async function startCheck(size: number) {
+    reset(level.value, category.value, 'check')
+    const p = await buildCheckSession(size, { loadLevel: (l) => loadLevel(l), getLearned: loadLearnedRecords })
+    plan.value = p
     return p
   }
 
@@ -78,7 +95,8 @@ export const useSessionStore = defineStore('session', () => {
   async function answer(card: SessionCard, isKnown: boolean) {
     if (isKnown) known.value++
     else unknown.value++
-    await recordAnswer(card.word, isKnown)
+    if (mode.value === 'check') await recordCheckAnswer(card.word, isKnown)
+    else await recordAnswer(card.word, isKnown)
   }
 
   /** Move to the next card and remember where we are (or forget the session when it is over). */
@@ -95,6 +113,7 @@ export const useSessionStore = defineStore('session', () => {
   }
 
   return {
+    mode,
     level,
     category,
     plan,
@@ -110,6 +129,7 @@ export const useSessionStore = defineStore('session', () => {
     answered,
     done,
     start,
+    startCheck,
     resume,
     answer,
     advance,

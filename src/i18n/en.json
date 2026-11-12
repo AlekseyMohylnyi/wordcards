@@ -29,9 +29,9 @@
     "noNewWords": "No new words left here."
   },
   "review": {
-    "title": "Check your learned words",
-    "subtitle": "{n} word is waiting | {n} words are waiting",
-    "start": "Check",
+    "title": "Check your learned words ({n})",
+    "subtitle": "Do you still remember them? \"Don't know\" sends a word back to review.",
+    "start": "Start",
     "later": "Later"
   },
   "categories": {
@@ -71,10 +71,13 @@
     "playAvailable": "Go through the rest ({n})",
     "chooseOther": "Choose another category",
     "backHome": "Home",
+    "checkMode": "Checking learned words",
+    "checkEmpty": "There are no learned words to check yet.",
     "retry": "Try again"
   },
   "summary": {
     "title": "Session complete!",
+    "checkTitle": "Check complete!",
     "subtitle": "Answers: {n}",
     "known": "I know",
     "unknown": "Don't know",
@@ -107,7 +110,9 @@
     "rateSlow": "Slow",
     "about": "About",
     "version": "Version",
-    "wordsInBase": "Words in database"
+    "wordsInBase": "Words in database",
+    "dev": "Development (npm run dev only)",
+    "devForceCheck": "Always show the check banner"
   },
   "update": {
     "available": "A new version is available",
