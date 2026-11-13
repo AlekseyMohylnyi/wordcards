@@ -10,6 +10,10 @@ import { i18n } from './i18n'
 import { requestPersistentStorage } from './db'
 import { useSettingsStore } from './stores/settings'
 import { watchColorScheme } from './theme'
+import { initInstallPrompt } from './services/install'
+
+// Catch Android's install offer as early as possible, before the app mounts
+initInstallPrompt()
 
 const app = createApp(App)
 app.use(createPinia())

@@ -147,7 +147,7 @@
     "langUk": "Українська",
     "langEn": "English",
     "theme": "Colour theme",
-    "themeHint": "Light or dark follows your iPhone automatically.",
+    "themeHint": "Light or dark follows your phone's settings automatically.",
     "learning": "Learning",
     "sessionSize": "Session size",
     "sessionSizeHint": "How many cards in one session.",
@@ -186,5 +186,12 @@
     "available": "A new version is available",
     "reload": "Update",
     "dismiss": "Close"
+  },
+  "install": {
+    "title": "Install WordCards",
+    "subtitle": "Home screen icon, full screen and works offline.",
+    "button": "Install the app",
+    "short": "Install",
+    "later": "Later"
   }
 }

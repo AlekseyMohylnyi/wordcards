@@ -12,6 +12,8 @@ import { useStatsStore } from '@/stores/stats'
 import ProgressRing from '@/components/ProgressRing.vue'
 import CategoryIcon from '@/components/CategoryIcon.vue'
 import ReviewBanner from '@/components/ReviewBanner.vue'
+import InstallBanner from '@/components/InstallBanner.vue'
+import { canInstall, isInstallBannerSnoozed, promptInstall, readInstallDismissedAt, snoozeInstallBanner } from '@/services/install'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -85,6 +87,15 @@ async function checkLater() {
   await snoozeCheckBanner()
 }
 
+// Android: "Install the app" banner (hidden on iPhone, where the browser never offers it)
+const installSnoozed = ref(isInstallBannerSnoozed(readInstallDismissedAt()))
+const showInstall = computed(() => canInstall.value && !installSnoozed.value)
+
+function installLater() {
+  installSnoozed.value = true
+  snoozeInstallBanner()
+}
+
 function start() {
   void router.push({ name: 'session', query: { level: settings.lastLevel, category: settings.lastCategory } })
 }
@@ -126,6 +137,7 @@ function start() {
       </ProgressRing>
     </header>
 
+    <InstallBanner v-if="showInstall" @install="promptInstall" @later="installLater" />
     <ReviewBanner v-if="check.show" :count="check.count" @start="startCheck" @later="checkLater" />
 
     <section class="block">

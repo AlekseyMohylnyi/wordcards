@@ -9,6 +9,7 @@ import { getSetting, setSetting } from '@/db'
 import { DEV_FORCE_CHECK_KEY } from '@/services/review'
 import OptionGroup from '@/components/OptionGroup.vue'
 import { ACCENTS, ACCENT_SWATCH, type Accent } from '@/theme'
+import { canInstall, promptInstall } from '@/services/install'
 
 const { t } = useI18n()
 const { settings } = useSettingsStore()
@@ -84,6 +85,15 @@ onMounted(async () => {
 <template>
   <div class="page settings">
     <h1 class="page-title">{{ t('settings.title') }}</h1>
+
+    <!-- Install (Android Chrome etc.; never shown on iPhone) -->
+    <section v-if="canInstall" class="card group">
+      <div class="field">
+        <span class="field-label">{{ t('install.title') }}</span>
+        <span class="field-hint">{{ t('install.subtitle') }}</span>
+      </div>
+      <button class="btn btn-primary install" @click="promptInstall">{{ t('install.button') }}</button>
+    </section>
 
     <!-- Interface -->
     <section class="card group">
@@ -263,6 +273,10 @@ onMounted(async () => {
 
 .swatch.on .swatch-name {
   color: var(--c-text);
+}
+
+.install {
+  align-self: flex-start;
 }
 
 .sample {
